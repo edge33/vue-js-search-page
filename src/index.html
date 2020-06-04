@@ -4,11 +4,94 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <title>Hello, world!</title>
+    <title>An awesome search page!</title>
   </head>
   <body>
-    <h1>Hello, world!</h1>
+    <div class="container" id="app">
+        <div class="row" style="margin-top:30px">
+            <h2>the awesome search page</h2>
+        </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <search-pane>
+            <template v-slot:default="slotProps">
+              <main class="wk-njb-overview">
+                <div v-show="!slotProps.data.loading" class="wk-content-filter-layout">
+                <facets-pane :facets="slotProps.data.searchResults.searchFacets"
+                             :startDate="slotProps.data.searchQuery.startDate"
+                             :endDate="slotProps.data.searchQuery.endDate">
+                    <template v-slot:default="facetsSlot">
+
+                        <section class="wk-content-filter-pane wk-tax-visions-filter-pane">
+                            <div class="wk-content-filter-pane-wrapper">
+                                <div class="wk-content-filter-pane-title"><span class="wk-icon-sliders"></span><span>Filters</span></div>
+                                <button class="wk-content-filter-pane-title wk-button-with-icon"> <span class="wk-icon-sliders"></span><span class="wk-icon-close"></span><span>Filter</span></button>
+                                <div class="wk-content-filter-wrapper wk-content-filter-datepicker">
+                                    <facets-list :facets="facetsSlot.data.genre.tags" :name="'Genre'" title="Genre">
+                                        <template v-slot:default="facetsListSlot">
+                                            <div class="" :id="'filter-' +  facetsListSlot.data.title">
+                                                <div class="wk-content-filter-title">{{facetsListSlot.data.title}}</div>
+                                                <ul class="wk-content-filter-list">
+                                                    <facet-item v-show="index < facetsSlot.data.itemsToShow || facetsSlot.data.expanded" v-for="(facet, index) in facetsListSlot.data.facets" :key="facet.id" :facet="facet" :facet-type="facetsListSlot.data.name"></facet-item>
+                                                </ul>
+                                                <a v-if="facetsListSlot.data.facets.length > facetsSlot.itemsToShow && !facetsListSlot.data.sectionExpanded" @click="facetsListSlot.data.toggleSection(true)" class="wk-content-filter-list-more" href="javascript:void(0)">Show More</a>
+                                                <a v-if="facetsListSlot.data.sectionExpanded" @click="facetsSlot.data.toggleSection(false)" class="wk-content-filter-list-more" href="javascript:void(0)">Show Less</a>
+                                                <a @click="facetsListSlot.data.clearFacets" class="wk-content-filter-clear" :class="{ 'visible': facetsListSlot.data.clearFilterActive, 'invisible': !facetsSlot.data.clearFilterActive }" href="javascript:void(0)">Clear Filters</a>
+                                            </div>
+                                        </template>
+                                    </facets-list>
+
+
+                                </div>
+                            </div>
+                        </section>
+
+
+
+
+
+                    </template>
+                </facets-pane>
+                  <search-results :search-results="slotProps.data.searchResults"
+                                  :has-more-items="slotProps.data.hasMoreItems"
+                                  :sorting="slotProps.data.selectedSorting">
+                    <template v-slot:default="searchSlot">
+
+                      <section class="wk-content-filter-results">
+                        <nav class="wk-content-filter-results-nav" aria-label="Search results pagination">
+                          <div class="wk-pagination-results"><strong>{{searchSlot.data.searchResults.hitCount}}</strong> Results</div>
+                          <div class="wk-results-sortby">
+                            Sorting
+                            <div class="wk-select-field">
+                              <select name="sort-by" aria-label="sort products by" v-model="searchSlot.data.selectedSorting" @change="searchSlot.data.sortingChanged">
+                                <option value="relevance">Relevance</option>
+                                <option value="actuality">Actuality</option>
+                              </select>
+                            </div>
+                          </div>
+<!--                          <active-facets-pane :facets="searchSlot.data.searchResults.searchFacets"></active-facets-pane>-->
+                        </nav>
+                        <section class="wk-search-results" aria-label="Search Results" role="contentinfo">
+                          <div>
+
+<!--                            <video-search-result v-for="(item, index) in searchResults.results" :key="item.Name" :item="item" :user="user"></video-search-result>-->
+<!--                            -->
+                            <span>Item</span>
+                          </div>
+                          <div class="wk-search-results-actions" v-if="searchSlot.data.hasMoreItems">
+                            <button @click="searchSlot.data.loadMore" class="wk-button wk-button-with-icon wk-button-not-animated" aria-label="Load more" title="Load more"><span>Load more</span></button>
+                          </div>
+                        </section>
+                      </section>
+                    </template>
+
+                  </search-results>
+                </div>
+              </main>
+            </template>
+          </search-pane>
+        </div>
+      </div>
+    </div>
   </body>
 </html>
