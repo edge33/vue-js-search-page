@@ -55,13 +55,11 @@
       <li
         v-for="facet in activeFacets"
         :key="facet.id"
-        class="wk-content-filter-item"
       >
         <a
-          class="wk-label"
           href="javascript:void(0)"
           @click="removeFacet(facet.id)"
-        >{{ facet.name }}<span class="wk-icon-close" /></a>
+        >{{ facet.name }}</a>
       </li>
     </ul>
     <div class="filter-actions">

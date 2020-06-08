@@ -2,7 +2,11 @@
     import Vue from 'vue';
     import {EventBus} from '../../../eventBus';
     import {SearchResultsModel} from '../../../models/Search/SearchResultsModel';
-    import {FacetInputModel, SearchQueryInputModel} from '../../../common/SearchQueryInputModel';
+    import {
+      FacetInputModel,
+      getSearchQueryInputModel,
+      SearchQueryInputModel
+    } from '../../../common/SearchQueryInputModel';
     import {getSearchResults} from '../SearchService';
     import {clearAllFacets, clearFacets, toggleFacet} from '../../../common/SearchQueryModelBuilder';
     import {activateCheckedFacets} from '../../../models/Search/SearchFacetsGroupModel';
@@ -19,11 +23,6 @@
                 type: String,
                 required: false,
                 default: ''
-            },
-            isListingPage: {
-                type: Boolean,
-                required: false,
-                default: false
             },
             searchUrl: {
                 type: String,
@@ -54,8 +53,8 @@
             this.fireQuery();
             window.addEventListener(
                 'popstate', () => {
-                    this.searchQuery = window.history.state;
-                    this.fireQuery();
+                    this.searchQuery = window.history.state != null ? window.history.state : getSearchQueryInputModel();
+                    this.doSearch();
                 }
             );
 
@@ -93,15 +92,9 @@
             fireQuery(): void  {
                 const queryString: string = toQueryString(this.searchQuery);
                 history.pushState(this.searchQuery, 'search', `?${queryString}`);
-                console.log(history);
                 this.loading = true;
+                this.doSearch();
 
-                getSearchResults(this.searchUrl, this.searchQuery)
-                    .then((searchResults: SearchResultsModel) => {
-                        this.searchResults = searchResults;
-                        activateCheckedFacets(this.searchResults.searchFacets, this.searchQuery.facets.map((item: FacetInputModel) => item.id));
-                        this.loading = false;
-                    });
             },
             loadMoreItems(): void {
                 this.searchQuery.pageStart = this.searchQuery.pageStart + this.searchQuery.count;
@@ -119,25 +112,48 @@
                         this.searchResults.hitCount = response.hitCount;
                         this.loading = false;
                     });
+            },
+            doSearch(): void {
+              getSearchResults(this.searchUrl, this.searchQuery)
+                      .then((searchResults: SearchResultsModel) => {
+                        this.searchResults = searchResults;
+                        activateCheckedFacets(this.searchResults.searchFacets, this.searchQuery.facets.map((item: FacetInputModel) => item.id));
+                        this.loading = false;
+                      });
             }
-        },
+        }
     });
 </script>
 
 <template>
   <div class="row">
-    <div class="col-md-4">
-      <p>Filters:</p>
-      <facets-pane :facets="searchResults.searchFacets" />
-    </div>
-    <div class="col-md-8">
-      <active-facets-pane :facets="searchResults.searchFacets" />
+    <div class="col-md-12">
+      <div
+        v-show="loading"
+        class="row"
+      >
+        <div class="col-md-12 text-center">
+          <spinner />
+        </div>
+      </div>
+      <div
+        v-show="!loading"
+        class="row"
+      >
+        <div class="col-md-4">
+          <p>Filters:</p>
+          <facets-pane :facets="searchResults.searchFacets" />
+        </div>
+        <div class="col-md-8">
+          <active-facets-pane :facets="searchResults.searchFacets" />
 
-      <search-results
-        :search-results="searchResults"
-        :has-more-items="hasMoreItems"
-        :sorting="selectedSorting"
-      />
+          <search-results
+            :search-results="searchResults"
+            :has-more-items="hasMoreItems"
+            :sorting="selectedSorting"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </template>

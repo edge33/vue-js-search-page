@@ -44,7 +44,7 @@
 </script>
 
 <template>
-  <div class="row">
+  <div class="row search-results">
     <div class="col-md-6">
       <p>there is a total of {{ searchResults.hitCount }} item{{ searchResults.hitCount > 1 ? 's' : '' }}</p>
     </div>
@@ -64,20 +64,31 @@
         </option>
       </select>
     </div>
-    <div class="row">
-      <search-item
-        v-for="(item) in searchResults.results"
-        :key="item.Name"
-        :item="item"
-      />
+    <div class="col-md-12">
+      <div class="row">
+        <search-item
+          v-for="(item) in searchResults.results"
+          :key="item.Name"
+          :item="item"
+        />
+      </div>
     </div>
-    <div class="col-md-12 text-center">
-      <div
+    <div
+      class="col-md-12 text-center"
+      style="margin-top: 30px"
+    >
+      <button
         class="btn btn-primary"
         @click="loadMore"
       >
         Load More
-      </div>
+      </button>
     </div>
   </div>
 </template>
+
+<style>
+  .search-results {
+    margin-bottom: 20%;
+  }
+</style>

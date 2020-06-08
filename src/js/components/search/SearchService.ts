@@ -4,7 +4,7 @@ import MockAdapter from 'axios-mock-adapter';
 import {SearchQueryInputModel} from '../../common/SearchQueryInputModel';
 import {mapSearchResults, SearchResultsModel} from '../../models/Search/SearchResultsModel';
 
-const mock = new MockAdapter(axios);
+const mock = new MockAdapter(axios, {delayResponse: 500});
 
 
 export function getSearchResults(searchUrl: string, searchQuery: SearchQueryInputModel): Promise<SearchResultsModel> {

@@ -54,7 +54,7 @@
     <div class="title">
       {{ name }}
     </div>
-    <ul class="wk-content-filter-list">
+    <ul>
       <facet-item
         v-for="(facet, index) in facets"
         v-show="index < itemsToShow || expanded"
