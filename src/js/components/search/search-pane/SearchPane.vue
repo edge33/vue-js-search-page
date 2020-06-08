@@ -1,6 +1,5 @@
 <script lang="ts">
     import Vue from 'vue';
-    import moment from 'moment';
     import {EventBus} from '../../../eventBus';
     import {SearchResultsModel} from '../../../models/Search/SearchResultsModel';
     import {FacetInputModel, SearchQueryInputModel} from '../../../common/SearchQueryInputModel';
