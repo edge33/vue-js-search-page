@@ -40,13 +40,24 @@
 
 <template>
   <div>
-    <slot
-      :data="{
-        genre: genre,
-        size: size,
-        length: length,
-        category: category,
-      }"
+    <facets-list
+      :facets="genre.tags"
+      name="Genre"
+    />
+
+    <facets-list
+      :facets="size.tags"
+      name="Size"
+    />
+
+    <facets-list
+      :facets="length.tags"
+      name="Length"
+    />
+
+    <facets-list
+      :facets="category.tags"
+      name="Category"
     />
   </div>
 </template>

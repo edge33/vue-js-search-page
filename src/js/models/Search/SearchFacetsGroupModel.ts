@@ -19,10 +19,6 @@ export function activateCheckedFacets(facets: SearchFacetsGroupModel[], checkedI
         facetGroup.tags.forEach((item: SearchFacetModel) => {
              if( checkedIds.indexOf(item.id) !== -1)
                  item.active = true;
-             item.subFacets.forEach((subFacet: SearchFacetModel) => {
-                 if (checkedIds.indexOf(subFacet.id) !== -1)
-                     subFacet.active = true;
-             })
         });
     })
 }

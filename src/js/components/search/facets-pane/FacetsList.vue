@@ -21,11 +21,6 @@
                 required: true,
                 default: ''
             },
-            title: {
-                type: String,
-                required: true,
-                default: ''
-            }
         },
         data: function() {
             return {
@@ -34,14 +29,8 @@
         },
         computed: {
             clearFilterActive: function(): boolean {
-                return this.facets.filter((facet: SearchFacetModel) => (facet.active && facet.subFacets.length === 0)
-                    || facet.subFacets.filter((subFacet: SearchFacetModel) => subFacet.active)
-                        .length > 0)
-                    .length > 0;
+                return this.facets.filter((facet: SearchFacetModel) => facet.active).length > 0;
             },
-            sectionExpanded: function(): boolean {
-                return this.expanded && this.facets.length > this.itemsToShow;
-            }
         },
         methods: {
             clearFacets(): void {
@@ -49,7 +38,7 @@
             },
             toggleSection(value: boolean): void {
                 this.expanded = value;
-                const filterGroup = document.querySelector(`#filter-${this.title}`);
+                const filterGroup = document.querySelector(`#filter-${this.name}`);
                 if (filterGroup != null) {
                     filterGroup.scrollIntoView();
                 }
@@ -59,17 +48,49 @@
 </script>
 
 <template>
-  <div>
-    <slot
-      :data="{
-        title: title,
-        facets: facets,
-        itemsToShow: itemsToShow,
-        sectionExpanded: sectionExpanded,
-        toggleSection: toggleSection,
-        clearFilterActive: clearFilterActive,
-        clearFacets: clearFacets
-      }"
-    />
+  <div
+    :id="'filter-' + name"
+  >
+    <div class="title">
+      {{ name }}
+    </div>
+    <ul class="wk-content-filter-list">
+      <facet-item
+        v-for="(facet, index) in facets"
+        v-show="index < itemsToShow || expanded"
+        :key="facet.id"
+        :facet="facet"
+        :facet-type="name"
+      />
+    </ul>
+    <div>
+      <a
+        v-if="facets.length > itemsToShow && !expanded"
+        class="btn btn-primary"
+        href="javascript:void(0)"
+        @click="toggleSection(true)"
+      >Show More</a>
+      <a
+        v-if="expanded"
+        class="btn btn-primary"
+        href="javascript:void(0)"
+        @click="toggleSection(false)"
+      >Show Less</a>
+      <a
+        class="btn btn-danger"
+        :class="{ 'visible': clearFilterActive, 'invisible': !clearFilterActive }"
+        href="javascript:void(0)"
+        @click="clearFacets"
+      >Clear Filters</a>
+    </div>
   </div>
 </template>
+
+<style>
+  ul {
+    padding: 0px;
+  }
+  .title {
+    font-weight: bold;
+  }
+</style>

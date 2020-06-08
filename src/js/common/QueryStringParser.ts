@@ -19,29 +19,19 @@ export function getUrlParams(search: string): SearchQueryInputModel {
             case 'q':
                 searchQueryInputModel.searchQuery = decodeURIComponent(val);
                 break;
-            case 't':
-                searchQueryInputModel.facets = getFacetsArray(searchQueryInputModel, idsArray, 'types');
+            case 'g':
+                searchQueryInputModel.facets = getFacetsArray(searchQueryInputModel, idsArray, 'Genre');
                 break;
-            case 'a':
-                searchQueryInputModel.facets = getFacetsArray(searchQueryInputModel, idsArray, 'Auteurs');
+            case 's':
+                searchQueryInputModel.facets = getFacetsArray(searchQueryInputModel, idsArray, 'Size');
                 break;
-            case 'r':
-                searchQueryInputModel.facets = getFacetsArray(searchQueryInputModel, idsArray, 'headings');
+            case 'l':
+                searchQueryInputModel.facets = getFacetsArray(searchQueryInputModel, idsArray, 'Length');
                 break;
-            case 'i':
-                searchQueryInputModel.facets = getFacetsArray(searchQueryInputModel, idsArray, 'cases');
+            case 'c':
+                searchQueryInputModel.facets = getFacetsArray(searchQueryInputModel, idsArray, 'Category');
                 break;
             case 'tag':
-                searchQueryInputModel.facets = getFacetsArray(searchQueryInputModel, idsArray, 'tag');
-                break;
-            case 'v':
-                searchQueryInputModel.facets = getFacetsArray(searchQueryInputModel, idsArray, 'Verzameling');
-                break;
-            case 'startdate':
-                searchQueryInputModel.startDate = decodeURIComponent(val);
-                break;
-            case 'enddate':
-                searchQueryInputModel.endDate = decodeURIComponent(val);
                 break;
             case 'pageStart':
                 searchQueryInputModel.pageStart = parseInt(val);
@@ -77,29 +67,18 @@ export function toQueryString(model: SearchQueryInputModel): string {
     if (searchString && searchString.length > 0)
         queryString += `q=${encodeURIComponent(searchString)}`;
 
-    model.facets.filter((facet: FacetInputModel) => facet.type === 'types');
     queryString += arrayToQueryString(model.facets
-        .filter((facet: FacetInputModel) => facet.type === 'types')
-        .map((facet: FacetInputModel) => facet.id), 't');
+        .filter((facet: FacetInputModel) => facet.type === 'Genre')
+        .map((facet: FacetInputModel) => facet.id), 'g');
     queryString += arrayToQueryString(model.facets
-        .filter((facet: FacetInputModel) => facet.type === 'cases')
-        .map((facet: FacetInputModel) => facet.id), 'i');
+        .filter((facet: FacetInputModel) => facet.type === 'Size')
+        .map((facet: FacetInputModel) => facet.id), 's');
     queryString += arrayToQueryString(model.facets
-        .filter((facet: FacetInputModel) => facet.type === 'headings')
-        .map((facet: FacetInputModel) => facet.id), 'r');
+        .filter((facet: FacetInputModel) => facet.type === 'Length')
+        .map((facet: FacetInputModel) => facet.id), 'l');
     queryString += arrayToQueryString(model.facets
-        .filter((facet: FacetInputModel) => facet.type === 'Auteurs')
-        .map((facet: FacetInputModel) => facet.id), 'a');
-    queryString += arrayToQueryString(model.facets
-        .filter((facet: FacetInputModel) => facet.type === 'Tags')
-        .map((facet: FacetInputModel) => facet.id), 'tag');
-    queryString += arrayToQueryString(model.facets
-        .filter((facet: FacetInputModel) => facet.type === 'Verzameling')
-        .map((facet: FacetInputModel) => facet.id), 'v');
-
-    queryString += stringToQueryString(model.startDate, 'startdate');
-    queryString += stringToQueryString(model.endDate, 'enddate');
-
+        .filter((facet: FacetInputModel) => facet.type === 'Category')
+        .map((facet: FacetInputModel) => facet.id), 'c');
     if (model.pageStart > 0) {
         queryString += stringToQueryString(model.pageStart.toString(), 'pageStart');
     }

@@ -46,15 +46,6 @@
         computed: {
             hasMoreItems: function(): boolean {
                 return this.searchResults.hitCount > this.searchQuery.pageStart + this.items;
-            },
-            hitCount: function(): number {
-                return this.searchResults.hitCount;
-            },
-            numberEndItemList: function(): number {
-                if (this.searchResults.results) {
-                    return this.searchResults.results.length;
-                }
-                return 0;
             }
         },
         mounted(): void {
@@ -85,23 +76,6 @@
                 this.fireQuery();
             });
 
-            EventBus.$on('date-changed', (startDate: string, endDate: string) => {
-                this.searchQuery.pageStart = 0;
-                const parsedStartDate = moment(startDate, 'DD/MM/YYYY');
-
-                if (parsedStartDate.isValid()) {
-                    this.searchQuery.startDate = parsedStartDate.format('YYYYMMDD');
-                } else {
-                    this.searchQuery.startDate = '';
-                }
-                const parsedEndDate = moment(endDate, 'DD/MM/YYYY');
-                if (parsedEndDate.isValid()) {
-                    this.searchQuery.endDate = parsedEndDate.format('YYYYMMDD');
-                } else {
-                    this.searchQuery.endDate = '';
-                }
-                this.fireQuery();
-            });
 
             EventBus.$on('load-more-clicked', () => {
                 this.loadMoreItems();
@@ -120,6 +94,7 @@
             fireQuery(): void  {
                 const queryString: string = toQueryString(this.searchQuery);
                 history.pushState(this.searchQuery, 'search', `?${queryString}`);
+                console.log(history);
                 this.loading = true;
 
                 getSearchResults(this.searchUrl, this.searchQuery)
@@ -151,19 +126,20 @@
 </script>
 
 <template>
-  <div>
-    <slot
-      :data="{
-        loading: loading,
-        searchQuery: searchQuery,
-        searchResults: searchResults,
-        pageStart: pageStart,
-        hasMoreItems: hasMoreItems,
-        hitCount: hitCount,
-        selectedSorting: selectedSorting,
-        loadMoreItems: loadMoreItems
-      }"
-    />
+  <div class="row">
+    <div class="col-md-4">
+      <p>Filters:</p>
+      <facets-pane :facets="searchResults.searchFacets" />
+    </div>
+    <div class="col-md-8">
+      <active-facets-pane :facets="searchResults.searchFacets" />
+
+      <search-results
+        :search-results="searchResults"
+        :has-more-items="hasMoreItems"
+        :sorting="selectedSorting"
+      />
+    </div>
   </div>
 </template>
 

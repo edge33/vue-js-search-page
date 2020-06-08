@@ -44,15 +44,40 @@
 </script>
 
 <template>
-  <div>
-    <slot
-      :data="{
-        searchResults: searchResults,
-        hasMoreItems: hasMoreItems,
-        selectedSorting: selectedSorting,
-        sortingChanged: sortingChanged,
-        loadMore: loadMore
-      }"
-    />
+  <div class="row">
+    <div class="col-md-6">
+      <p>there is a total of {{ searchResults.hitCount }} item{{ searchResults.hitCount > 1 ? 's' : '' }}</p>
+    </div>
+    <div class="col-md-6 text-right">
+      Sort by:
+      <select
+        v-model="selectedSorting"
+        name="sort-by"
+        aria-label="sort products by"
+        @change="sortingChanged"
+      >
+        <option value="relevance">
+          Relevance
+        </option>
+        <option value="actuality">
+          Date
+        </option>
+      </select>
+    </div>
+    <div class="row">
+      <search-item
+        v-for="(item) in searchResults.results"
+        :key="item.Name"
+        :item="item"
+      />
+    </div>
+    <div class="col-md-12 text-center">
+      <div
+        class="btn btn-primary"
+        @click="loadMore"
+      >
+        Load More
+      </div>
+    </div>
   </div>
 </template>
