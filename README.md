@@ -1,6 +1,6 @@
 **vue-js-search-page**
 
-A resuable set of components implementing a sample SPA with **Infinite-scrolling**, **faceted search** and list of active facets.
+A reusable set of components implementing a sample SPA with **Infinite-scrolling**, **faceted search** and list of active facets.
 
 
 ![Demo](demo.gif)
