@@ -23,7 +23,8 @@
         },
         data: function() {
             return {
-                selectedSorting: 'actuality'
+                selectedSorting: 'actuality',
+                loading: false
             }
         },
         watch:{
@@ -32,8 +33,14 @@
                     this.selectedSorting = val;
             }
         },
+        mounted(): void {
+          EventBus.$on('load-more-done', () => {
+            this.loading = false;
+          });
+        },
         methods: {
             loadMore: function(): void {
+                this.loading = true;
                 EventBus.$emit('load-more-clicked');
             },
             sortingChanged: function(): void {
@@ -78,10 +85,11 @@
       style="margin-top: 30px"
     >
       <button
+        :disabled="loading"
         class="btn btn-primary"
         @click="loadMore"
       >
-        Load More
+        Load More <span v-if="loading"><spinner /></span>
       </button>
     </div>
   </div>

@@ -105,12 +105,11 @@
                     searchQuery: this.searchQuery
                 }
                 history.pushState(state, 'search', `?${queryString}`);
-
                 getSearchResults(this.searchUrl, this.searchQuery)
                     .then((response: SearchResultsModel) => {
                         this.searchResults.results = this.searchResults.results.concat(response.results);
                         this.searchResults.hitCount = response.hitCount;
-                        this.loading = false;
+                        EventBus.$emit('load-more-done');
                     });
             },
             doSearch(): void {
